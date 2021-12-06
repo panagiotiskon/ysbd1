@@ -1,4 +1,5 @@
-dio.h>#include <stdio.h>
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 int * file;
@@ -31,15 +32,22 @@ Record remove_last(bucket * head);
 Record remove_by_index(bucket ** head, int n);
 void pushd(directory * head, bucket * b,int i);
 directory dir;
+FILE * fp=NULL;
 HT_ErrorCode HT_Init() {
   file=malloc(MAX_OPEN_FILES*sizeof(int)); ////na arxikopoihsw ton pinaka me ta files edw o pinakas twra exei mono pointers se files 
   return HT_OK;
 }
 
 HT_ErrorCode HT_CreateIndex(const char *filename, int depth) {
-  printf(filename);
-
-
+  int i;
+  for(i=0;i<depth*2;i++){       //dhmiourgw directory me 4 kelia afou global depth=2 me pointers NULL afou buckets adeia
+    pushd(&dir,NULL,i);
+  }
+  fp=fopen("filename","w");
+  if(fp==NULL){
+    return HT_ERROR;
+  }
+  return HT_OK;
 }
 
 HT_ErrorCode HT_OpenIndex(const char *fileName, int *indexDesc){
