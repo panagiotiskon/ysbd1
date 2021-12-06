@@ -1,7 +1,7 @@
-#include <stdio.h>
+dio.h>#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+int * file;
 #include "bf.h"
 #include "hash_file.h"
 #define MAX_OPEN_FILES 20
@@ -14,38 +14,32 @@
     return HP_ERROR;        \
   }                         \
 }                            \
-int *file=malloc(MAX_OPEN_FILES*sizeof(int));
+
 typedef struct node{
   Record r;
   struct node * next;
+  int depth;
 } bucket;
 typedef struct node1{
   bucket * b;
   int id;
   struct node1* next;
 } directory;       
-void push(bucket * head, Record r);
+void push(bucket * head, Record r,int d);
 Record pop(bucket ** head);
 Record remove_last(bucket * head);
 Record remove_by_index(bucket ** head, int n);
 void pushd(directory * head, bucket * b,int i);
-struct node * popd(directory ** head);
-struct node * remove_lastd(directory * head);
+directory dir;
 HT_ErrorCode HT_Init() {
-  directory dir;
-
+  file=malloc(MAX_OPEN_FILES*sizeof(int)); ////na arxikopoihsw ton pinaka me ta files edw o pinakas twra exei mono pointers se files 
   return HT_OK;
 }
 
 HT_ErrorCode HT_CreateIndex(const char *filename, int depth) {
+  printf(filename);
 
 
-  HT_Init();
-  int i;
-  for(i=0;i<(depth*2);i++){
-    pushd(dir,NULL,i);
-  }
-  return HT_OK;
 }
 
 HT_ErrorCode HT_OpenIndex(const char *fileName, int *indexDesc){
@@ -67,7 +61,7 @@ HT_ErrorCode HT_PrintAllEntries(int indexDesc, int *id) {
   //insert code here
   return HT_OK;
 }
-void push(bucket * head, Record r) {
+void push(bucket * head, Record r,int d) {
     bucket * current = head;
     while (current->next != NULL) {
         current = current->next;
@@ -75,6 +69,7 @@ void push(bucket * head, Record r) {
     /* now we can add a new variable */
     current->next = (bucket *) malloc(sizeof(bucket));
     current->next->r = r;
+    current->next->depth=d;
     current->next->next = NULL;
   }
   Record pop(bucket ** head) {
@@ -142,6 +137,15 @@ void push(bucket * head, Record r) {
 
     return retval;
   }
+
+
+
+
+
+
+
+
+
   //////////////////////////// directories
 
 
@@ -164,40 +168,4 @@ void push(bucket * head, Record r) {
     current->next->id=i;
     current->next->next = NULL;
   }
-  struct node * popd(directory ** head) {
-    struct node  *retval ;
-    directory * next_node = NULL;
 
-    if (*head == NULL) {
-        printf("poping from empty list");
-    }
-
-    next_node = (*head)->next;
-    retval = (*head)->b;
-    free(*head);
-    *head = next_node;
-
-    return retval;
-  }
-  struct node * remove_lastd(directory * head) {
-    struct node *retval;
-    /* if there is only one item in the list, remove it */
-    if (head->next == NULL) {
-        retval = head->b;
-        free(head);
-        return retval;
-    }
-
-    /* get to the second to last node in the list */
-    directory * current = head;
-    while (current->next->next != NULL) {
-        current = current->next;
-    }
-
-    /* now current points to the second to last item of the list, so let's remove current->next */
-    retval = current->next->b;
-    free(current->next);
-    current->next = NULL;
-    return retval;
-
-  }
