@@ -66,6 +66,7 @@ HT_ErrorCode HT_OpenIndex(const char *fileName, int *indexDesc){
 
 HT_ErrorCode HT_CloseFile(int indexDesc) {        //otan ena file kleinei prepei na vgainei kai apo ton pinaka me ta files kai na apodesmeyetai o xwros toy
   //insert code here
+  
   return HT_OK;
 }
 
