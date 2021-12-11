@@ -23,6 +23,7 @@ const char* names[] = {
   "Giorgos",
   "Dimitris"
 };
+//test
 
 const char* surnames[] = {
   "Ioannidis",
