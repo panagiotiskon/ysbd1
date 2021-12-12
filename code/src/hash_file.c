@@ -12,7 +12,7 @@ int * file;          ///////////// auto ?????
   BF_ErrorCode code = call; \
   if (code != BF_OK) {         \
     BF_PrintError(code);    \
-    return HP_ERROR;        \
+    return BF_ERROR;        \
   }                         \
 }                            \
 
@@ -32,10 +32,11 @@ Record remove_last(bucket * head);
 Record remove_by_index(bucket ** head, int n);
 void pushd(directory * head, bucket * b,int i);
 ///////////////directory dir;
-FILE * fp=NULL;
+FILE * fp=NULL; 
 HT_ErrorCode HT_Init() {
   file=malloc(MAX_OPEN_FILES*sizeof(int)); ////na arxikopoihsw ton pinaka me ta files edw o pinakas twra exei mono pointers se files 
 //g  FILE files[MAX_OPEN_FILES]; 
+  
   return HT_OK;
 }
 
@@ -43,25 +44,21 @@ HT_ErrorCode HT_CreateIndex(const char *filename, int depth) {
   directory dir; 
   printf("Created empty directory.\n");                 ///////dhmioyrgia directory mesa sthn create index kai oxi global 
   int i;
-  for(i=0;i<depth*2;i++){       //dhmiourgw directory me 4 kelia afou global depth=2 me pointers NULL afou buckets adeia
+  BF_Block *block;
+  BF_Block_Init(&block); 
+  for(i=0;i<depth*2;i++){ 
+    //BF_AllocateBlock()      //dhmiourgw directory me 4 kelia afou global depth=2 me pointers NULL afou buckets adeia
     pushd(&dir,NULL,i);
   }
-
-  fp=fopen(filename,"w");      // xrhsimopoioume fopen gia th dhmioyrgia toy arxeiou 
-  if(fp==NULL){
-    return HT_ERROR;
-  }
-
+  BF_CreateFile(filename); 
+  
+  
   return HT_OK;
 }
 
 HT_ErrorCode HT_OpenIndex(const char *fileName, int *indexDesc){
-  //fp = fopen(fileName, "r");  
-  //files[indexDesc] = fopen(filename,"r"); 
-  if (fp == NULL) {
-    return HT_ERROR; 
-  }
-  return HT_OK;
+  
+  //BF_CreateFile(fileName); 
 }
 
 HT_ErrorCode HT_CloseFile(int indexDesc) {        //otan ena file kleinei prepei na vgainei kai apo ton pinaka me ta files kai na apodesmeyetai o xwros toy
